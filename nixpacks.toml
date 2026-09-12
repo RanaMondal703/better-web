@@ -21,6 +21,12 @@ cmd = '/assets/start.sh'
 chown -R www-data:www-data /app/storage /app/bootstrap/cache
 chmod -R 775 /app/storage /app/bootstrap/cache
 
+# Ensure the SQLite database exists (persisted via the /app/database volume mount) and is migrated
+mkdir -p /app/database
+touch /app/database/database.sqlite
+chown -R www-data:www-data /app/database
+php /app/artisan migrate --force
+
 # Transform the nginx configuration
 node /assets/scripts/prestart.mjs /assets/nginx.template.conf /etc/nginx.conf
 
